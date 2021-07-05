@@ -18,10 +18,16 @@ export class HeroService {
   // Using constructor to inject HeroService with MessageService.
   constructor(private messageService: MessageService) { }
 
-  // of(HEROES) is used to mock HttpClient.get<Hero[]>() which returns an Observable<Hero[]> that emits a single value, the array of mock heroes.
+  // of() returns an Observable<Hero[]> that emits a single value, the array of mock heroes.
   getHeroes(): Observable<Hero[]> {
-    const heroes = of(HEROES);
+    const heroes = HEROES;
     this.messageService.add('HeroService: fetched heroes');
-    return heroes;
+    return of(heroes);
+  }
+
+  getHero(id: number): Observable<Hero> {
+    const hero = HEROES.find(h => h.id === id)!;
+    this.messageService.add(`HeroService: fetched hero id=${id}`);
+    return of(hero);
   }
 }
