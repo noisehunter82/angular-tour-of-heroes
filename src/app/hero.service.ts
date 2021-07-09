@@ -4,8 +4,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { Hero } from './hero';
-// Import mock-heroes source.
-import { HEROES } from './mock-heroes';
 import { MessageService } from './message.service';
 
 
@@ -31,6 +29,7 @@ export class HeroService {
 
   /* tap() operator, which looks at the observable values, does something with those values, and passes them along.The tap() call back doesn't touch the values themselves. */
 
+
   getHeroes(): Observable<Hero[]> {
     return this.http.get<Hero[]>(this.heroesUrl)
       .pipe(
@@ -38,6 +37,21 @@ export class HeroService {
         catchError(this.handleError<Hero[]>('getHeroes', []))
       );
   }
+
+
+  searchHeroes(term: string): Observable<Hero[]> {
+    if (!term.trim()) return of([]);
+
+    const url = `${this.heroesUrl}/?name=${term}`;
+    return this.http.get<Hero[]>(url, this.httpOptions)
+      .pipe(
+        tap(x => x.length ?
+          this.log(`found heroes matching "${term}"`) :
+          this.log(`no heroes matching "${term}"`)),
+        catchError(this.handleError<Hero[]>('searchHeroes', []))
+      );
+  }
+
 
   getHero(id: number): Observable<Hero> {
     const url = `${this.heroesUrl}/${id}`;
@@ -48,6 +62,7 @@ export class HeroService {
       );
   }
 
+
   updateHero(hero: Hero): Observable<any> {
     return this.http.put(this.heroesUrl, hero, this.httpOptions)
       .pipe(
@@ -55,6 +70,7 @@ export class HeroService {
         catchError(this.handleError<any>('updateHero'))
       );
   }
+
 
   /** POST: add a new hero to the server */
   addHero(hero: Hero): Observable<Hero> {

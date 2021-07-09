@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -13,9 +13,9 @@ import { Hero } from '../hero';
   styleUrls: ['./hero-detail.component.css']
 })
 export class HeroDetailComponent implements OnInit {
-
-  @Input() hero?: Hero;  //Importing Input at the top and using @Input() decorator allows binding selectedHero from parent component to hero property of the child component. Binding is done in html.
   
+  hero: Hero | undefined;
+
   constructor(
     private route: ActivatedRoute,
     private heroService: HeroService,
